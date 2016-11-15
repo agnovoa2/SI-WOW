@@ -14,9 +14,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import entities.wow.proyectosi.Boss;
+import entities.wow.proyectosi.Item;
 
-public class BossTest extends SQLBasedTest{
+public class ItemTest extends SQLBasedTest{
 	private static EntityManagerFactory emf;
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -27,37 +27,49 @@ public class BossTest extends SQLBasedTest{
 		if(emf!=null && emf.isOpen()) emf.close();
 	}
 	@Test
-	public void testCreateBoss() throws SQLException {
+	public void testCreateItem() throws SQLException {
 		
 		
-		final Boss b = new Boss();		
+		final Item i = new Item();		
 		
 		doTransaction(emf, em->{
-				b.setName("Ragnaros");
-				b.setLevel(80);
-				em.persist(b);
+				i.setId(23416);
+				i.setItemLevel(86);
+				i.setName("Corrupted Ashbringer");
+				i.setSellPrice(110631);
+				i.setSlot("Main Hand");
+				i.setType("Two-Hand Sword");
+				em.persist(i);
 		});
 		
 		
 		//check
 		Statement statement = jdbcConnection.createStatement();
 		ResultSet rs = statement.executeQuery(
-				"Select Count(*) as total From Boss Where id = " + b.getId());
+				"Select Count(*) as total From Item Where id = " + i.getId());
 		rs.next();
 		
 		assertEquals(1, rs.getInt("total"));
+		statement.executeUpdate(
+				"Delete From item Where id = " + i.getId());
 	}
 	@Test
-	public void testFindBossById() throws SQLException{
+	public void testFindItemById() throws SQLException{
 		//prepare database for test
 		Statement statement = jdbcConnection.createStatement();
-		int id = statement.executeUpdate("Insert Into Boss(name,level) values('Ragnaros',80)",Statement.RETURN_GENERATED_KEYS);
+		statement.executeUpdate(
+				"Insert Into Item(id,itemLevel,name,sellPrice,slot,type) values(23416,80,'Corrupted Ashbringer',110631,'Main Hand','Two-Hand Sword')"
+				,Statement.RETURN_GENERATED_KEYS);
+		int id = 23416;
 		
 		//test code
-		Boss b = emf.createEntityManager().find(Boss.class, id);
-		
+		Item i = emf.createEntityManager().find(Item.class, id);
+
 		//assert code
-		assertEquals("Ragnaros", b.getName());
-		assertEquals(id, b.getId());
+		assertEquals("Corrupted Ashbringer", i.getName());
+		assertEquals(id, i.getId());
+		
+		statement.executeUpdate(
+				"Delete From item Where id = " + i.getId());
 	}
 }
