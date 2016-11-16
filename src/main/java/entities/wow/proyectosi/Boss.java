@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Boss {
@@ -14,7 +16,10 @@ public class Boss {
 	
 	private String name;
 	private int level;
-	// private Raid
+
+	@ManyToOne
+	@JoinColumn(name = "raid")
+	private Raid raid;
 	
 
 	public int getId() {
@@ -35,5 +40,13 @@ public class Boss {
 	
 	public void setLevel(int level) {
 		this.level = level;
+	}
+	
+	public Raid getRaid() {
+		return raid;
+	}
+	
+	public void setRaid(Raid raid) {
+		this.raid = raid;
 	}
 }

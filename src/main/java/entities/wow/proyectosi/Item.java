@@ -1,7 +1,12 @@
 package entities.wow.proyectosi;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class Item {
@@ -15,6 +20,11 @@ public class Item {
 	private int sellPrice;
 	private int itemLevel;
 
+	@ManyToMany
+	@JoinTable(name = "personage_equipment", joinColumns = @JoinColumn(name = "item_id", referencedColumnName = "id"), 
+		inverseJoinColumns = @JoinColumn(name = "personage_id", referencedColumnName = "id"))
+	private List<Personage> personages;
+	
 	public int getId() {
 		return id;
 	}
@@ -61,5 +71,13 @@ public class Item {
 
 	public void setItemLevel(int itemLevel) {
 		this.itemLevel = itemLevel;
+	}
+	
+	public List<Personage> getPersonages() {
+		return personages;
+	}
+	
+	public void setPersonages(List<Personage> personages) {
+		this.personages = personages;
 	}
 }
