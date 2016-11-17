@@ -21,9 +21,9 @@ public class Item {
 	private int itemLevel;
 
 	@ManyToMany
-	@JoinTable(name = "personage_equipment", joinColumns = @JoinColumn(name = "item_id", referencedColumnName = "id"), 
-		inverseJoinColumns = @JoinColumn(name = "personage_id", referencedColumnName = "id"))
-	private List<Personage> personages;
+	@JoinTable(name = "wowcharacter_equipment", joinColumns = @JoinColumn(name = "item_id", referencedColumnName = "id"), 
+		inverseJoinColumns = @JoinColumn(name = "wowcharacter_id", referencedColumnName = "id"))
+	private List<WowCharacter> wowcharacters;
 	
 	public int getId() {
 		return id;
@@ -73,11 +73,11 @@ public class Item {
 		this.itemLevel = itemLevel;
 	}
 	
-	public List<Personage> getPersonages() {
-		return personages;
+	public List<WowCharacter> getWowCharacters() {
+		return wowcharacters;
 	}
 	
-	public void setPersonages(List<Personage> personages) {
-		this.personages = personages;
+	public void setWowCharacters(List<WowCharacter> characters) {
+		this.wowcharacters = characters;
 	}
 }

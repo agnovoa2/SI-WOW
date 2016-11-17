@@ -10,7 +10,7 @@
          <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
          <property name="javax.persistence.jdbc.user" value="siuser"/>
          <property name="javax.persistence.jdbc.password" value="sipass"/>
-         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/si"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://ndrs.es:3306/si"/>
          <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
          <property name="hibernate.max_fetch_depth" value="3"/>
        	<property name="hibernate.hbm2ddl.auto" value="create"/>

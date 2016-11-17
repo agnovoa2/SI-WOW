@@ -9,7 +9,7 @@ public class SQLBasedTest {
 	protected static Connection jdbcConnection;
 	
 	private static String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	private static final String DB_URL = "jdbc:mysql://localhost:3306/si";
+	private static final String DB_URL = "jdbc:mysql://ndrs.es:3306/si";
 	private static final String USER = "siuser";
 	private static final String PASS = "sipass";
 	
