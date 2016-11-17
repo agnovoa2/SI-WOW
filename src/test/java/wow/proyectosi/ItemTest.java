@@ -10,6 +10,7 @@ import java.sql.Statement;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,10 +22,19 @@ public class ItemTest extends SQLBasedTest{
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		emf = Persistence.createEntityManagerFactory("si-database");
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate(
+				"Delete From Item Where id = 23416");
 	}	
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		if(emf!=null && emf.isOpen()) emf.close();
+	}
+	@After
+	public void deleteTestItem() throws SQLException{
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate(
+				"Delete From Item Where id = 23416");
 	}
 	@Test
 	public void testCreateItem() throws SQLException {
@@ -50,8 +60,7 @@ public class ItemTest extends SQLBasedTest{
 		rs.next();
 		
 		assertEquals(1, rs.getInt("total"));
-		statement.executeUpdate(
-				"Delete From item Where id = " + i.getId());
+
 	}
 	@Test
 	public void testFindItemById() throws SQLException{
@@ -70,6 +79,6 @@ public class ItemTest extends SQLBasedTest{
 		assertEquals(id, i.getId());
 		
 		statement.executeUpdate(
-				"Delete From item Where id = " + i.getId());
+				"Delete From Item Where id = " + i.getId());
 	}
 }
