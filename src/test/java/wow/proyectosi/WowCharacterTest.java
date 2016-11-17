@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import entities.wow.proyectosi.WowCharacter;
 
-public class CharacterTest extends SQLBasedTest{
+public class WowCharacterTest extends SQLBasedTest{
 	private static EntityManagerFactory emf;
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -54,7 +54,7 @@ public class CharacterTest extends SQLBasedTest{
 				"Delete From WowCharacter Where id = " + i.getId());
 	}
 	@Test
-	public void testFindItemById() throws SQLException{
+	public void testFindWowCharacterById() throws SQLException{
 		//prepare database for test
 		Statement statement = jdbcConnection.createStatement();
 		statement.executeUpdate(
