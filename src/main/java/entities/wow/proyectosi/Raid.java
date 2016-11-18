@@ -1,5 +1,6 @@
 package entities.wow.proyectosi;
 
+import java.util.Collections;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -28,7 +29,7 @@ public class Raid {
 	}
 	
 	public Set<Boss> getBosses() {
-		return bosses;
+		return Collections.unmodifiableSet(this.bosses);
 	}
 	
 	public void setBosses(Set<Boss> bosses) {
@@ -65,5 +66,21 @@ public class Raid {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public void addBoss(Boss boss){
+		boss.setRaid(this);
+	}
+	
+	public void removeBoss(Boss boss){
+		boss.setRaid(null);
+	}
+	
+	void internalAddBoss(Boss boss){
+		this.bosses.add(boss);
+	}
+	
+	void internalRemoveBoss(Boss boss){
+		this.bosses.remove(boss);
 	}
 }

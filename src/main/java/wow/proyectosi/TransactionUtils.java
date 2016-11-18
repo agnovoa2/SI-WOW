@@ -13,8 +13,7 @@ public class TransactionUtils {
 			tx = em.getTransaction();			
 			try{
 				tx.begin();		
-					//em.persist(emp);
-				transaction.run(em);
+					transaction.run(em);
 				tx.commit();						
 			}finally{
 				if (tx !=null && tx.isActive()){ tx.rollback(); }

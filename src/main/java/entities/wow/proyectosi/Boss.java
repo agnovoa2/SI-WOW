@@ -47,6 +47,14 @@ public class Boss {
 	}
 	
 	public void setRaid(Raid raid) {
+		if(this.raid != null){
+			this.raid.internalRemoveBoss(this);
+		}
+		
 		this.raid = raid;
+
+		if(this.raid != null){
+			this.raid.internalAddBoss(this);
+		}
 	}
 }

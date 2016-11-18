@@ -1,6 +1,7 @@
 package entities.wow.proyectosi;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,10 +28,10 @@ public class WowCharacter {
 	
 
 	@ManyToMany(mappedBy="wowcharacters")
-	private List<Item> items;
+	private Set<Item> items;
 	
 	@ManyToMany(mappedBy="wowcharacters")
-	private List<Quest> quests;
+	private Set<Quest> quests;
 	
 	@ManyToOne
 	@JoinColumn(name = "party")
@@ -88,23 +89,33 @@ public class WowCharacter {
 		this.faction = faction;
 	}
 
-	public List<Quest> getQuests() {
-		return quests;
-	}
-
-	public void setQuests(List<Quest> quests) {
-		this.quests = quests;
+	public Set<Quest> getQuests() {
+		return Collections.unmodifiableSet(quests);
 	}
 
 	public void setId(int id) {
 		this.id = id;
 	}
 	
-	public List<Item> getItems() {
-		return items;
+	public Set<Item> getItems() {
+		return Collections.unmodifiableSet(items);
+	}
+
+	public void addItem(Item item) {
+		item.internalAddWowCharacter(this);
+		this.items.add(item);
 	}
 	
-	public void setItems(List<Item> items) {
-		this.items = items;
+	void internalAddItem(Item item) {
+		this.items.add(item);
+	}
+	
+	public void removeItem(Item item){
+		item.internalRemoveWowCharacter(this);
+		this.items.remove(item);
+	}
+	
+	void internalRemoveItem(Item item) {
+		this.items.remove(item);
 	}
 }

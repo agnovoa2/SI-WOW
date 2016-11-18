@@ -1,6 +1,7 @@
 package entities.wow.proyectosi;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,7 +24,7 @@ public class Item {
 	@ManyToMany
 	@JoinTable(name = "wowcharacter_equipment", joinColumns = @JoinColumn(name = "item_id", referencedColumnName = "id"), 
 		inverseJoinColumns = @JoinColumn(name = "wowcharacter_id", referencedColumnName = "id"))
-	private List<WowCharacter> wowcharacters;
+	private Set<WowCharacter> wowcharacters;
 	
 	public int getId() {
 		return id;
@@ -73,11 +74,25 @@ public class Item {
 		this.itemLevel = itemLevel;
 	}
 	
-	public List<WowCharacter> getWowCharacters() {
-		return wowcharacters;
+	public Set<WowCharacter> getWowCharacters() {
+		return Collections.unmodifiableSet(this.wowcharacters);
 	}
 	
-	public void setWowCharacters(List<WowCharacter> characters) {
-		this.wowcharacters = characters;
+	public void addWowCharacter(WowCharacter wowCharcater){
+		wowCharcater.internalAddItem(this);
+		this.wowcharacters.add(wowCharcater);
+	}
+	
+	void internalAddWowCharacter(WowCharacter wowCharacter){
+		this.wowcharacters.add(wowCharacter);
+	}
+	
+	public void removeWowCharacter(WowCharacter wowCharcater){
+		wowCharcater.internalRemoveItem(this);
+		this.wowcharacters.remove(wowCharcater);
+	}
+	
+	void internalRemoveWowCharacter(WowCharacter wowCharacter){
+		this.wowcharacters.remove(wowCharacter);
 	}
 }
