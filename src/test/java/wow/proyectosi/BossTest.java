@@ -6,10 +6,12 @@ import static wow.proyectosi.TransactionUtils.doTransaction;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,6 +28,12 @@ public class BossTest extends SQLBasedTest{
 	public static void tearDownAfterClass() throws Exception {
 		if(emf!=null && emf.isOpen()) emf.close();
 	}
+	@After
+	public void deleteTestItem() throws SQLException{
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate("Delete From Boss");
+	}
+	//C
 	@Test
 	public void testCreateBoss() throws SQLException {
 		
@@ -47,11 +55,17 @@ public class BossTest extends SQLBasedTest{
 		
 		assertEquals(1, rs.getInt("total"));
 	}
+	
+	//R
 	@Test
 	public void testFindBossById() throws SQLException{
 		//prepare database for test
 		Statement statement = jdbcConnection.createStatement();
-		int id = statement.executeUpdate("Insert Into Boss(name,level) values('Ragnaros',80)",Statement.RETURN_GENERATED_KEYS);
+		statement.executeUpdate(
+				"Insert Into Boss(name,level) values('Ragnaros',80)",Statement.RETURN_GENERATED_KEYS
+				);
+		
+		int id = getLastInsertedId(statement);
 		
 		//test code
 		Boss b = emf.createEntityManager().find(Boss.class, id);
@@ -59,5 +73,110 @@ public class BossTest extends SQLBasedTest{
 		//assert code
 		assertEquals("Ragnaros", b.getName());
 		assertEquals(id, b.getId());
+	}
+	
+	//U
+	@Test
+	public void testUpdateBoss() throws SQLException{
+		//prepare database for test
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate(
+				"Insert Into Boss(name,level) values('Ragnaros',80)",Statement.RETURN_GENERATED_KEYS
+				);
+		
+		int id = getLastInsertedId(statement);
+		
+		doTransaction(emf, em -> {
+			Boss b = em.find(Boss.class, id);
+			b.setName("Arthas");
+		});
+		
+		//check
+		statement = jdbcConnection.createStatement();
+		ResultSet rs = statement.executeQuery(
+				"SELECT * FROM Boss WHERE id = "+id);
+		rs.next();
+		
+		assertEquals("Arthas", rs.getString("name"));
+		assertEquals(id, rs.getInt("id"));
+	}
+	
+	//U
+	private Boss aDetachedBoss = null;
+	@Test
+	public void testUpdateByMerge() throws SQLException {
+		//prepare database for test
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate(
+				"Insert Into Boss(name,level) values('Ragnaros',80)",Statement.RETURN_GENERATED_KEYS
+				);
+		int id = getLastInsertedId(statement);
+		
+		doTransaction(emf, em -> {
+			aDetachedBoss = em.find(Boss.class, id);
+		});
+		// e is detached, because the entitymanager em is closed (see doTransaction)
+		
+		aDetachedBoss.setName("Arthas");
+		
+		doTransaction(emf, em -> {
+			em.merge(aDetachedBoss);
+		});
+		
+		//check
+		statement = jdbcConnection.createStatement();
+		ResultSet rs = statement.executeQuery(
+				"SELECT * FROM Boss WHERE id = "+id);
+		rs.next();
+		
+		assertEquals("Arthas", rs.getString("name"));
+		assertEquals(id, rs.getInt("id"));
+	}
+	
+	//D
+	@Test
+	public void testDeleteBoss() throws SQLException {
+		//prepare database for test
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate(
+				"Insert Into Boss(name,level) values('Ragnaros',80)",Statement.RETURN_GENERATED_KEYS
+				);
+		int id = getLastInsertedId(statement);
+		
+		doTransaction(emf, em -> {
+			Boss b = em.find(Boss.class, id);
+			em.remove(b);
+		});
+		
+		//check
+		statement = jdbcConnection.createStatement();
+		ResultSet rs = statement.executeQuery(
+				"SELECT COUNT(*) as total FROM Boss WHERE id = "+id);
+		rs.next();
+		
+		assertEquals(0, rs.getInt("total"));
+	}
+	
+	//L
+	@Test
+	public void testListBosses() throws SQLException {
+		//prepare database for test
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate(
+				"Insert Into Boss(name,level) values('Ragnaros',80)",Statement.RETURN_GENERATED_KEYS
+				);
+		//prepare database for test
+		statement.executeUpdate(
+				"Insert Into Boss(name,level) values('Arthas',80)",Statement.RETURN_GENERATED_KEYS
+				);
+		
+		List<Boss> bosses = emf.createEntityManager()
+			.createQuery("SELECT b FROM Boss b ORDER BY b.name", Boss.class)
+			.getResultList();
+		
+		//check
+		assertEquals(2, bosses.size());
+		assertEquals("Arthas", bosses.get(0).getName());
+		assertEquals("Ragnaros", bosses.get(1).getName());
 	}
 }
