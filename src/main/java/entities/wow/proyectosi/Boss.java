@@ -43,7 +43,7 @@ public class Boss {
 	}
 	
 	public Raid getRaid() {
-		return raid;
+		return this.raid;
 	}
 	
 	public void setRaid(Raid raid) {

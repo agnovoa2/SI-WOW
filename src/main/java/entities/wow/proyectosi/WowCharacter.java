@@ -118,4 +118,20 @@ public class WowCharacter {
 	void internalRemoveItem(Item item) {
 		this.items.remove(item);
 	}
+	
+	public Party getParty(){
+		return this.party;
+	}
+	
+	public void setParty(Party party) {
+		if(this.party != null){
+			this.party.internalRemoveWowCharacter(this);
+		}
+		
+		this.party = party;
+
+		if(this.party != null){
+			this.party.internalAddWowCharacter(this);
+		}
+	}
 }

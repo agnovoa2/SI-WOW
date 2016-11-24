@@ -1,5 +1,7 @@
 package entities.wow.proyectosi;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -17,18 +19,28 @@ public class Party {
 	private int id;
 	
 	@OneToMany(mappedBy="party",cascade=CascadeType.REMOVE)
-	private Set<WowCharacter> members;
+	private Set<WowCharacter> wowCharacters = new HashSet<>();
 
 	
 	public int getId() {
 		return id;
 	}
 	
-	public Set<WowCharacter> getMembers() {
-		return members;
+	public Set<WowCharacter> getWowCharacters() {
+		return Collections.unmodifiableSet(wowCharacters);
 	}
 	
-	public void setMembers(Set<WowCharacter> members) {
-		this.members = members;
+	public void setMembers(Set<WowCharacter> wowCharacters) {
+		this.wowCharacters = wowCharacters;
+	}
+
+	public void internalRemoveWowCharacter(WowCharacter wowCharacter) {
+		this.wowCharacters.add(wowCharacter);
+		
+	}
+
+	public void internalAddWowCharacter(WowCharacter wowCharacter) {
+		this.wowCharacters.remove(wowCharacter);
+		
 	}
 }

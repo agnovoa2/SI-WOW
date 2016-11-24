@@ -6,14 +6,17 @@ import static wow.proyectosi.TransactionUtils.doTransaction;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import entities.wow.proyectosi.WowCharacter;
 import entities.wow.proyectosi.Party;
 
 public class PartyTest extends SQLBasedTest{
@@ -26,44 +29,114 @@ public class PartyTest extends SQLBasedTest{
 	public static void tearDownAfterClass() throws Exception {
 		if(emf!=null && emf.isOpen()) emf.close();
 	}
+	@After
+	public void deleteTestItem() throws SQLException{
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate("Delete From WowCharacter");
+		statement.executeUpdate("Delete From Party");
+	}
+	//C
 	@Test
 	public void testCreateParty() throws SQLException {
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate(
+				"Insert Into WowCharacter(name,level,gender,race,characterClass,faction) values('Test character',50,'Male','Human','Warrior','Alliance')", 
+				Statement.RETURN_GENERATED_KEYS);
+		int id = getLastInsertedId(statement);
 		
-		
-		final Party i = new Party();		
-		
+		Party p = new Party();
 		doTransaction(emf, em->{
-				em.persist(i);
+			em.persist(p);
+			WowCharacter c = em.find(WowCharacter.class, id);
+			c.setParty(p);
 		});
 		
 		
+		p.getWowCharacters();
+		
 		//check
-		Statement statement = jdbcConnection.createStatement();
+		statement = jdbcConnection.createStatement();
 		ResultSet rs = statement.executeQuery(
-				"Select Count(*) as total from Party Where id = " + i.getId());
+				"SELECT COUNT(*) as total FROM Party WHERE id = "+p.getId());
 		rs.next();
 		
 		assertEquals(1, rs.getInt("total"));
-		statement.executeUpdate(
-				"Delete From Party Where id = " + i.getId());
+		
+		statement = jdbcConnection.createStatement();
+		
+		rs = statement.executeQuery(
+				"SELECT party FROM WowCharacter e WHERE id = "+id);
+		rs.next();
+		
+		assertEquals(p.getId(), rs.getInt("party"));
+			
 	}
+	//R
 	@Test
-	public void testFindPartyById() throws SQLException{
+	public void testFindParty() throws SQLException{
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate(
+				"Insert Into Party() values()", 
+				Statement.RETURN_GENERATED_KEYS);
+		int partyId = getLastInsertedId(statement);
+		
+		statement = jdbcConnection.createStatement();
+		statement.executeUpdate(
+				"Insert Into WowCharacter(name,level,gender,race,characterClass,faction,party) values('Test character',50,'Male','Human','Warrior','Alliance',"+partyId+")", 
+				Statement.RETURN_GENERATED_KEYS);
+		int wowCharacterId = getLastInsertedId(statement);
+		
+		Party p = emf.createEntityManager().find(Party.class, partyId);
+		
+		assertEquals(1, p.getWowCharacters().size());
+		assertEquals(wowCharacterId, p.getWowCharacters().iterator().next().getId());
+		assertEquals(p, p.getWowCharacters().iterator().next().getParty());
+	}
+	
+	//D
+	@Test
+	public void testDeleteParty() throws SQLException {
 		//prepare database for test
 		Statement statement = jdbcConnection.createStatement();
 		statement.executeUpdate(
-				"Insert Into Party(id) values(1)"
-				,Statement.RETURN_GENERATED_KEYS);
-		int id = 1;
+				"Insert Into Party() values()", 
+				Statement.RETURN_GENERATED_KEYS);
+		int id = getLastInsertedId(statement);
 		
-		//test code
-		Party i = emf.createEntityManager().find(Party.class, id);
-
-		//assert code
-		assertEquals(id, i.getId());
+		doTransaction(emf, em -> {
+			Party p = em.find(Party.class, id);
+			em.remove(p);
+		});
 		
-		statement.executeUpdate(
-				"Delete From Party Where id = " + i.getId());
+		//check
+		statement = jdbcConnection.createStatement();
+		ResultSet rs = statement.executeQuery(
+				"SELECT COUNT(*) as total FROM Party WHERE id = "+id);
+		rs.next();
+		
+		assertEquals(0, rs.getInt("total"));
 	}
-
+	
+	//L
+	@Test
+	public void testListWowParties() throws SQLException {
+		//prepare database for test
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate(
+				"Insert Into Party() values()", 
+				Statement.RETURN_GENERATED_KEYS);
+		//prepare database for test
+		statement.executeUpdate(
+				"Insert Into Party() values()", 
+				Statement.RETURN_GENERATED_KEYS);
+		
+		List<Party> parties = emf.createEntityManager()
+			.createQuery("SELECT p FROM Party p ORDER BY p.id", Party.class)
+			.getResultList();
+		
+		//check
+		assertEquals(2, parties.size());
+		assertEquals(1, parties.get(0).getId());
+		assertEquals(2, parties.get(1).getId());
+	}
 }

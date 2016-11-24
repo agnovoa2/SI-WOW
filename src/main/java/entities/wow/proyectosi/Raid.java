@@ -1,10 +1,12 @@
 package entities.wow.proyectosi;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,8 +23,8 @@ public class Raid {
 	private String location;
 	private int numPlayers;
 
-	@OneToMany(mappedBy="raid",cascade=CascadeType.REMOVE)
-	private Set<Boss> bosses;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="raid",cascade=CascadeType.REMOVE)
+	private Set<Boss> bosses = new HashSet<>();
 	
 	public int getId() {
 		return id;
