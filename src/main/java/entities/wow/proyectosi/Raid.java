@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +22,7 @@ public class Raid {
 	private String location;
 	private int numPlayers;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy="raid",cascade=CascadeType.REMOVE)
+	@OneToMany(mappedBy="raid",cascade=CascadeType.REMOVE)
 	private Set<Boss> bosses = new HashSet<>();
 	
 	public int getId() {

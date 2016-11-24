@@ -16,7 +16,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import entities.wow.proyectosi.Quest;
-import entities.wow.proyectosi.WowCharacter;
 
 public class QuestTest extends SQLBasedTest {
 	private static EntityManagerFactory emf;

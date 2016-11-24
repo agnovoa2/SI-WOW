@@ -15,7 +15,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import entities.wow.proyectosi.Boss;
 import entities.wow.proyectosi.WowCharacter;
 
 public class WowCharacterTest extends SQLBasedTest{
