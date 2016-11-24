@@ -6,6 +6,7 @@ import static wow.proyectosi.TransactionUtils.doTransaction;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -14,6 +15,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import entities.wow.proyectosi.Boss;
 import entities.wow.proyectosi.WowCharacter;
 
 public class WowCharacterTest extends SQLBasedTest{
@@ -72,4 +74,116 @@ public class WowCharacterTest extends SQLBasedTest{
 		statement.executeUpdate(
 				"Delete From WowCharacter Where id = " + i.getId());
 	}
+	
+	
+	//U
+		@Test
+		public void testUpdateWowCharacter() throws SQLException{
+			//prepare database for test
+			Statement statement = jdbcConnection.createStatement();
+			statement.executeUpdate(
+					"Insert Into WowCharacter(characterClass, faction, gender, level, name, race) values('Warrior','Alliance', 'Male', '50', 'somename', 'Human')",Statement.RETURN_GENERATED_KEYS
+					);
+			
+			int id = getLastInsertedId(statement);
+			
+			doTransaction(emf, em -> {
+				WowCharacter wc = em.find(WowCharacter.class, id);
+				wc.setName("CharacterTest");
+			});
+			
+			//check
+			statement = jdbcConnection.createStatement();
+			ResultSet rs = statement.executeQuery(
+					"SELECT * FROM WowCharacter WHERE id = "+id);
+			rs.next();
+			
+			assertEquals("CharacterTest", rs.getString("name"));
+			assertEquals("Human", rs.getString("race"));
+			assertEquals(id, rs.getInt("id"));
+		}
+		
+		//U
+		private WowCharacter aDetachedWowCharacter = null;
+		@Test
+		public void testUpdateByMerge() throws SQLException {
+			//prepare database for test
+			Statement statement = jdbcConnection.createStatement();
+			statement.executeUpdate(
+					"Insert Into WowCharacter(characterClass, faction, gender, level, name, race) values('Warrior','Alliance', 'Male', '50', 'somename', 'Human')",Statement.RETURN_GENERATED_KEYS
+					);
+			int id = getLastInsertedId(statement);
+			
+			doTransaction(emf, em -> {
+				aDetachedWowCharacter = em.find(WowCharacter.class, id);
+			});
+			// e is detached, because the entitymanager em is closed (see doTransaction)
+			
+			aDetachedWowCharacter.setName("CharacterTest");
+			
+			doTransaction(emf, em -> {
+				em.merge(aDetachedWowCharacter);
+			});
+			
+			//check
+			statement = jdbcConnection.createStatement();
+			ResultSet rs = statement.executeQuery(
+					"SELECT * FROM WowCharacter WHERE id = "+id);
+			rs.next();
+			
+			assertEquals("CharacterTest", rs.getString("name"));
+			assertEquals(id, rs.getInt("id"));
+		}
+		
+		//D
+		@Test
+		public void testDeleteWowCharacter() throws SQLException {
+			//prepare database for test
+			Statement statement = jdbcConnection.createStatement();
+			statement.executeUpdate(
+					"Insert Into WowCharacter(characterClass, faction, gender, level, name, race) values('Warrior','Alliance', 'Male', '50', 'somename', 'Human')",Statement.RETURN_GENERATED_KEYS
+					);
+			int id = getLastInsertedId(statement);
+			
+			doTransaction(emf, em -> {
+				WowCharacter b = em.find(WowCharacter.class, id);
+				em.remove(b);
+			});
+			
+			//check
+			statement = jdbcConnection.createStatement();
+			ResultSet rs = statement.executeQuery(
+					"SELECT COUNT(*) as total FROM WowCharacter WHERE id = "+id);
+			rs.next();
+			
+			assertEquals(0, rs.getInt("total"));
+		}
+		
+		//L
+		@Test
+		public void testListWowCharacters() throws SQLException {
+			//prepare database for test
+			Statement statement = jdbcConnection.createStatement();
+			//Ensure table is clean to test
+			statement.executeUpdate(
+					"Delete from WowCharacter",Statement.RETURN_GENERATED_KEYS
+					);
+			statement.executeUpdate(
+					"Insert Into WowCharacter(characterClass, faction, gender, level, name, race) values('Warrior','Alliance', 'Male', '50', 'Guy1', 'Human')",Statement.RETURN_GENERATED_KEYS
+					);
+			//prepare database for test
+			statement.executeUpdate(
+					"Insert Into WowCharacter(characterClass, faction, gender, level, name, race) values('Warrior','Alliance', 'Male', '50', 'Guy2', 'Human')",Statement.RETURN_GENERATED_KEYS
+					);
+			
+			List<WowCharacter> wowCharacters = emf.createEntityManager()
+				.createQuery("SELECT wc FROM WowCharacter wc ORDER BY wc.name", WowCharacter.class)
+				.getResultList();
+			
+			//check
+			assertEquals(2, wowCharacters.size());
+			assertEquals("Guy1", wowCharacters.get(0).getName());
+			assertEquals("Guy2", wowCharacters.get(1).getName());
+		}
+	
 }
