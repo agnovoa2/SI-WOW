@@ -8,17 +8,27 @@ public class TransactionUtils {
 
 	public static void doTransaction(EntityManagerFactory emf, Transaction transaction) {
 		EntityTransaction tx = null;
-		EntityManager em = emf.createEntityManager();												
-		try{
-			tx = em.getTransaction();			
-			try{
-				tx.begin();		
+		EntityManager em = emf.createEntityManager();
+		try {
+			tx = em.getTransaction();
+			try {
+				tx.begin();
 					transaction.run(em);
-				tx.commit();						
-			}finally{
+				tx.commit();
+			} finally{
 				if (tx !=null && tx.isActive()){ tx.rollback(); }
 			}
-		}finally{	em.close(); 	}
+		} finally{	em.close(); 	}
 	}
-	
+
+	public static void doTransaction(EntityManager em, Transaction transaction) {
+		EntityTransaction tx = em.getTransaction();
+		try {
+			tx.begin();
+				transaction.run(em);
+			tx.commit();
+		} finally {
+			if (tx !=null && tx.isActive()){ tx.rollback(); }
+		}
+	}
 }

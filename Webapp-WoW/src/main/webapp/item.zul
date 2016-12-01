@@ -1,0 +1,48 @@
+<?page title="Item management" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window title="Item management" border="normal"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vmitem') @init('wow.proyectosi.webapp.viewmodel.ItemViewModel')">
+		<label>Id</label>
+		<textbox value="@bind(vmitem.id)" />
+		<div />
+		<label>Item Name</label>
+		<textbox value="@bind(vmitem.name)" />
+		<div />
+		<label>Item Level</label>
+		<textbox value="@bind(vmitem.itemLevel)" />
+		<div />
+		<label>Item Sell Price</label>
+		<textbox value="@bind(vmitem.sellPrice)" />
+		<div />
+		<label>Item Slot</label>
+		<textbox value="@bind(vmitem.slot)" />
+		<div />
+		<label>Item Type</label>
+		<textbox value="@bind(vmitem.type)" />
+		<div />
+		<button onClick="@command('create')">Submit</button>
+		<div />
+		<label>Current items</label>
+		<listbox width="400px" model="@load(vmitem.items)">
+			<listhead>
+				<listheader label="Id" sort="auto" />
+				<listheader label="Name" sort="auto" />
+				<listheader label="Item Level" sort="auto" />
+				<listheader label="Sell Price" sort="auto" />
+				<listheader label="Slot" sort="auto" />
+				<listheader label="Type" sort="auto" />
+			</listhead>
+			<template name="model" var="item">
+				<listitem>
+					<listcell label="@load(item.id)" />
+					<listcell label="@load(item.name)" />
+					<listcell label="@load(item.itemLevel)" />
+					<listcell label="@load(item.sellPrice)" />
+					<listcell label="@load(item.slot)" />
+					<listcell label="@load(item.type)" />
+				</listitem>
+			</template>
+		</listbox>
+	</window>
+</zk>
