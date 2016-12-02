@@ -1,49 +1,63 @@
 <?page title="Boss management" contentType="text/html;charset=UTF-8"?>
 <zk>
-	<window title="Boss management" border="normal"
+	<include src="menu.zul" />
+	<window title="Edit Bosses" border="normal"
 		apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vmboss') @init('wow.proyectosi.webapp.viewmodel.BossViewModel')">
-		<textbox placeholder="110" value="@bind(vmboss.level)" />
-		<div />
-		<textbox placeholder="name" value="@bind(vmboss.name)" />
-		<div />
-		<listbox width="400px" model="@load(vmboss.raids)"
-			selectedItem="@bind(vmboss.selectedRaid)">
-			<listhead>
-				<listheader label="level" sort="auto" />
-				<listheader label="location" sort="auto" />
-				<listheader label="name" sort="auto" />
-				<listheader label="players #" sort="auto" />
-			</listhead>
-			<template name="model" var="raid">
-				<listitem disabled="true">
-					<listcell label="@Load(raid.level)" />
-					<listcell label="@Load(raid.location)" />
-					<listcell label="@Load(raid.name)" />
-					<listcell label="@Load(raid.numPlayers)" />
-				</listitem>
-			</template>
-		</listbox>
-		<div />
-		<button onClick="@command('create')">Submit</button>
-		<div />
-		<label>Current bosses</label>
-		<listbox width="400px" model="@load(vmboss.bosses)"
-			selectedItem="@bind(vmboss.selectedBoss)">
-			<listhead>
-				<listheader label="Id" sort="auto" />
-				<listheader label="Name" sort="auto" />
-				<listheader label="Level" sort="auto" />
-				<listheader label="Raid" sort="auto" />
-			</listhead>
-			<template name="model" var="boss">
-				<listitem>
-					<listcell label="@load(boss.id)" />
-					<listcell label="@load(boss.name)" />
-					<listcell label="@load(boss.level)" />
-					<listcell label="@load(boss.raid.name)" />
-				</listitem>
-			</template>
-		</listbox>
+		viewModel="@id('vm') @init('wow.proyectosi.webapp.viewmodel.BossVM')">
+
+		<window title="Project Editor" border="normal" mode="modal"
+			visible="@load(vm.currentBoss ne null)">
+			Name:
+			<textbox
+				value="@load(vm.currentBoss.name) @save(vm.currentBoss.name, before='save')" />
+			<div/>
+			Level:
+			<textbox
+				value="@load(vm.currentBoss.level) @save(vm.currentBoss.level, before='save')" />
+			<div/>
+			Raid
+			<combobox model="@load(vm.raids)" 
+					selectedItem="@load(vm.currentBoss.raid) @save(vm.currentBoss.raid, before='save')">
+				<template name="model">
+					<comboitem label="@load(each.name)"/>
+				</template>
+			</combobox>
+			<hbox>
+				<button label="save" onClick="@command('save')" />
+				<button label="cancel" onClick="@command('cancel')" />
+			</hbox>
+		</window>
+		<groupbox mold="3d" closable="false">
+			<caption label="Boss list">
+				<button label="new" onClick="@command('newBoss')" />
+			</caption>
+			<listbox model="@load(vm.bosses)">
+				<listhead>
+					<listheader label="Name" />
+					<listheader label="Level" />
+					<listheader label="Raid" />
+					<listheader label="Actions" />
+				</listhead>
+				<template name="model">
+					<listitem>
+						<listcell>
+							<label value="@load(each.name)"/>
+						</listcell>
+						<listcell>
+							<label value="@load(each.level)"/>
+						</listcell>
+						<listcell>
+							<label value="@load(each.raid.name)"/>
+						</listcell>
+						<listcell>
+							<button label="delete"
+								onClick="@command('delete', b=each)" />
+							<button label="edit"
+								onClick="@command('edit', b=each)" />
+						</listcell>
+					</listitem>
+				</template>
+			</listbox>
+		</groupbox>
 	</window>
 </zk>

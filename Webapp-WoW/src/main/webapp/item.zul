@@ -1,48 +1,84 @@
 <?page title="Item management" contentType="text/html;charset=UTF-8"?>
 <zk>
-	<window title="Item management" border="normal"
+	<include src="menu.zul" />
+	<window title="Edit Items" border="normal"
 		apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vmitem') @init('wow.proyectosi.webapp.viewmodel.ItemViewModel')">
-		<label>Id</label>
-		<textbox value="@bind(vmitem.id)" />
-		<div />
-		<label>Item Name</label>
-		<textbox value="@bind(vmitem.name)" />
-		<div />
-		<label>Item Level</label>
-		<textbox value="@bind(vmitem.itemLevel)" />
-		<div />
-		<label>Item Sell Price</label>
-		<textbox value="@bind(vmitem.sellPrice)" />
-		<div />
-		<label>Item Slot</label>
-		<textbox value="@bind(vmitem.slot)" />
-		<div />
-		<label>Item Type</label>
-		<textbox value="@bind(vmitem.type)" />
-		<div />
-		<button onClick="@command('create')">Submit</button>
-		<div />
-		<label>Current items</label>
-		<listbox width="400px" model="@load(vmitem.items)">
-			<listhead>
-				<listheader label="Id" sort="auto" />
-				<listheader label="Name" sort="auto" />
-				<listheader label="Item Level" sort="auto" />
-				<listheader label="Sell Price" sort="auto" />
-				<listheader label="Slot" sort="auto" />
-				<listheader label="Type" sort="auto" />
-			</listhead>
-			<template name="model" var="item">
-				<listitem>
-					<listcell label="@load(item.id)" />
-					<listcell label="@load(item.name)" />
-					<listcell label="@load(item.itemLevel)" />
-					<listcell label="@load(item.sellPrice)" />
-					<listcell label="@load(item.slot)" />
-					<listcell label="@load(item.type)" />
-				</listitem>
-			</template>
-		</listbox>
+		viewModel="@id('vm') @init('wow.proyectosi.webapp.viewmodel.ItemVM')">
+
+		<window title="Project Editor" border="normal" mode="modal"
+			visible="@load(vm.currentItem ne null)">
+			Id:
+			<textbox
+				value="@load(vm.currentItem.id) @save(vm.currentItem.id, before='save')" />
+			<div/>
+			Name:
+			<textbox
+				value="@load(vm.currentItem.name) @save(vm.currentItem.name, before='save')" />
+			<div/>
+			Item level:
+			<textbox
+				value="@load(vm.currentItem.itemLevel) @save(vm.currentItem.itemLevel, before='save')" />
+			<div/>
+			Sell price:
+			<textbox
+				value="@load(vm.currentItem.sellPrice) @save(vm.currentItem.sellPrice, before='save')" />
+			<div/>
+			Slot:
+			<textbox
+				value="@load(vm.currentItem.slot) @save(vm.currentItem.slot, before='save')" />
+			<div/>
+			Type:
+			<textbox
+				value="@load(vm.currentItem.type) @save(vm.currentItem.type, before='save')" />
+			<div/>
+			<hbox>
+				<button label="save" onClick="@command('save')" />
+				<button label="cancel" onClick="@command('cancel')" />
+			</hbox>
+		</window>
+		<groupbox mold="3d" closable="false">
+			<caption label="Item list">
+				<button label="new" onClick="@command('newItem')" />
+			</caption>
+			<listbox model="@load(vm.items)">
+				<listhead>
+					<listheader label="Id" />
+					<listheader label="Name" />
+					<listheader label="Item level" />
+					<listheader label="Sell price" />
+					<listheader label="Slot" />
+					<listheader label="Type" />
+					<listheader label="Actions" />
+				</listhead>
+				<template name="model">
+					<listitem>
+						<listcell>
+							<label value="@load(each.id)"></label>
+						</listcell>
+						<listcell>
+							<label value="@load(each.name)"></label>
+						</listcell>
+						<listcell>
+							<label value="@load(each.itemLevel)"></label>
+						</listcell>
+						<listcell>
+							<label value="@load(each.sellPrice)"></label>
+						</listcell>
+						<listcell>
+							<label value="@load(each.slot)"></label>
+						</listcell>
+						<listcell>
+							<label value="@load(each.type)"></label>
+						</listcell>
+						<listcell>
+							<button label="delete"
+								onClick="@command('delete', i=each)" />
+							<button label="edit"
+								onClick="@command('edit', i=each)" />
+						</listcell>
+					</listitem>
+				</template>
+			</listbox>
+		</groupbox>
 	</window>
 </zk>

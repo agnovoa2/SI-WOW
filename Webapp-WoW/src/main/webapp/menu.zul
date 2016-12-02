@@ -1,0 +1,18 @@
+<zk>
+	<menubar>
+		<menu label="Bosses">
+			<menupopup>
+				<menuitem label="Edit Bosses..." 
+				href="boss.zul">
+				</menuitem>
+			</menupopup>
+		</menu>
+		<menu label="Items">
+			<menupopup>
+				<menuitem label="Edit Items..." 
+				href="item.zul">
+				</menuitem>
+			</menupopup>
+		</menu>
+	</menubar>
+</zk>
