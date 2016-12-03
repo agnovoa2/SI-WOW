@@ -1,0 +1,53 @@
+<zk>
+
+	<window title = "Edit Raids" border = "normal"
+		apply = "org.zkoss.bind.BindComposer"
+		viewModel = "@id('vm') @init('wow.proyectosi.webapp.viewmodel.RaidVM')"
+	>	
+	
+		<window title="Raid Editor" border="normal" mode="modal" visible="@load(vm.currentRaid ne null)">
+			Name: <textbox value="@load(vm.currentRaid.name) @save(vm.currentRaid.name, before='save')" />
+			Level: <textbox value="@load(vm.currentRaid.level) @save(vm.currentRaid.level, before='save')" />
+			Location: <textbox value="@load(vm.currentRaid.location) @save(vm.currentRaid.location, before='save')" />
+			Number of Players: <textbox value="@load(vm.currentRaid.numPlayers) @save(vm.currentRaid.numPlayers, before='save')" />
+			<hbox>
+				
+				<button label="save" onClick="@command('save')"/>
+				<button label="cancel" onClick="@command('cancel')"/>
+			</hbox>
+
+		</window>
+	
+		<groupbox mold = "3d" closable = "false">
+			
+			<caption label = "Raid list">
+				<button label = "new" onClick = "@command('newRaid')"/>
+			</caption>
+		
+			<listbox model ="@load(vm.raids)">
+				<listhead>
+					<listheader label = "Name"/>
+					<listheader label = "Level"/>
+					<listheader label = "Location"/>
+					<listheader label = "Number of Players"/>
+					<listheader label = "Actions" />
+				</listhead>
+				<template name="model">
+					<listitem>
+						<listcell label = "@load(each.name)" />
+						<listcell label = "@load(each.level)" />
+						<listcell label = "@load(each.location)" />
+						<listcell label = "@load(each.numPlayers)" />
+						
+						<listcell>
+							<button label = "delete" onClick = "@command('delete', r = each)"/>
+							<button label = "edit" onClick = "@command('edit', r = each)"/>
+						</listcell>
+					</listitem>
+				</template>
+			</listbox>
+		</groupbox>	
+	
+	</window>
+
+</zk>
