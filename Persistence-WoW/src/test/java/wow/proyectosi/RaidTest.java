@@ -30,7 +30,7 @@ public class RaidTest extends SQLBasedTest{
 		if(emf!=null && emf.isOpen()) emf.close();
 	}
 	@After
-	public void deleteTestItem() throws SQLException{
+	public void deleteTestRaid() throws SQLException{
 		Statement statement = jdbcConnection.createStatement();
 		statement.executeUpdate("Delete From Boss");
 		statement.executeUpdate("Delete From Raid");

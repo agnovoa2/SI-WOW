@@ -18,6 +18,8 @@ public class Party {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
+	private String name;
+	
 	@OneToMany(mappedBy="party",cascade=CascadeType.REMOVE)
 	private Set<WowCharacter> wowCharacters = new HashSet<>();
 
@@ -42,5 +44,13 @@ public class Party {
 	public void internalAddWowCharacter(WowCharacter wowCharacter) {
 		this.wowCharacters.remove(wowCharacter);
 		
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

@@ -30,7 +30,7 @@ public class PartyTest extends SQLBasedTest{
 		if(emf!=null && emf.isOpen()) emf.close();
 	}
 	@After
-	public void deleteTestItem() throws SQLException{
+	public void deleteTestParty() throws SQLException{
 		Statement statement = jdbcConnection.createStatement();
 		statement.executeUpdate("Delete From WowCharacter");
 		statement.executeUpdate("Delete From Party");
@@ -45,6 +45,7 @@ public class PartyTest extends SQLBasedTest{
 		int id = getLastInsertedId(statement);
 		
 		Party p = new Party();
+		p.setName("Test Party");
 		doTransaction(emf, em->{
 			em.persist(p);
 			WowCharacter c = em.find(WowCharacter.class, id);
@@ -76,7 +77,7 @@ public class PartyTest extends SQLBasedTest{
 	public void testFindParty() throws SQLException{
 		Statement statement = jdbcConnection.createStatement();
 		statement.executeUpdate(
-				"Insert Into Party() values()", 
+				"Insert Into Party(name) values('Test Party')", 
 				Statement.RETURN_GENERATED_KEYS);
 		int partyId = getLastInsertedId(statement);
 		
@@ -93,13 +94,71 @@ public class PartyTest extends SQLBasedTest{
 		assertEquals(p, p.getWowCharacters().iterator().next().getParty());
 	}
 	
+	//U
+	@Test
+	public void testUpdateParty() throws SQLException{
+		//prepare database for test
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate(
+				"Insert Into Party(name) values('Test Party')",
+				Statement.RETURN_GENERATED_KEYS
+				);
+		
+		int id = getLastInsertedId(statement);
+		
+		doTransaction(emf, em -> {
+			Party p = em.find(Party.class, id);
+			p.setName("Test Party Updated");
+		});
+		
+		//check
+		statement = jdbcConnection.createStatement();
+		ResultSet ps = statement.executeQuery(
+				"SELECT * FROM Party WHERE id = "+id);
+		ps.next();
+		
+		assertEquals("Test Party Updated", ps.getString("name"));
+		assertEquals(id, ps.getInt("id"));
+	}
+	
+	//U
+	private Party aDetachedParty = null;
+	@Test
+	public void testUpdateByMerge() throws SQLException {
+		//prepare database for test
+		Statement statement = jdbcConnection.createStatement();
+		statement.executeUpdate(
+				"Insert Into Party(name) values('Test Party')",
+				Statement.RETURN_GENERATED_KEYS);
+		int id = getLastInsertedId(statement);
+		
+		doTransaction(emf, em -> {
+			aDetachedParty = em.find(Party.class, id);
+		});
+		// e is detached, because the entitymanager em is closed (see doTransaction)
+		
+		aDetachedParty.setName("Test Party Updated");
+		
+		doTransaction(emf, em -> {
+			em.merge(aDetachedParty);
+		});
+		
+		//check
+		statement = jdbcConnection.createStatement();
+		ResultSet rs = statement.executeQuery(
+				"SELECT * FROM Party WHERE id = "+id);
+		rs.next();
+		
+		assertEquals("Test Party Updated", rs.getString("name"));
+		assertEquals(id, rs.getInt("id"));
+	}	
 	//D
 	@Test
 	public void testDeleteParty() throws SQLException {
 		//prepare database for test
 		Statement statement = jdbcConnection.createStatement();
 		statement.executeUpdate(
-				"Insert Into Party() values()", 
+				"Insert Into Party(name) values('Test Party')", 
 				Statement.RETURN_GENERATED_KEYS);
 		int id = getLastInsertedId(statement);
 		
@@ -123,11 +182,11 @@ public class PartyTest extends SQLBasedTest{
 		//prepare database for test
 		Statement statement = jdbcConnection.createStatement();
 		statement.executeUpdate(
-				"Insert Into Party() values()", 
+				"Insert Into Party(name) values('Test Party')",
 				Statement.RETURN_GENERATED_KEYS);
 		//prepare database for test
 		statement.executeUpdate(
-				"Insert Into Party() values()", 
+				"Insert Into Party(name) values('Test Party 2')",
 				Statement.RETURN_GENERATED_KEYS);
 		
 		List<Party> parties = emf.createEntityManager()
@@ -136,7 +195,7 @@ public class PartyTest extends SQLBasedTest{
 		
 		//check
 		assertEquals(2, parties.size());
-		assertEquals(1, parties.get(0).getId());
-		assertEquals(2, parties.get(1).getId());
+		assertEquals("Test Party", parties.get(0).getName());
+		assertEquals("Test Party 2", parties.get(1).getName());
 	}
 }
