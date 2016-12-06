@@ -1,0 +1,42 @@
+<zk>
+
+	<window title = "Edit Parties" border = "normal"
+		apply = "org.zkoss.bind.BindComposer"
+		viewModel = "@id('vm') @init('wow.proyectosi.webapp.viewmodel.PartyVM')"
+	>	
+	
+		<window title="Party Editor" border="normal" mode="modal" visible="@load(vm.currentParty ne null)">
+			Name: <textbox value="@load(vm.currentParty.name) @save(vm.currentParty.name, before='save')" />
+			<hbox>
+				<button label="save" onClick="@command('save')"/>
+				<button label="cancel" onClick="@command('cancel')"/>
+			</hbox>
+
+		</window>
+	
+		<groupbox mold = "3d" closable = "false">
+			
+			<caption label = "Party list">
+				<button label = "new" onClick = "@command('newParty')"/>
+			</caption>
+		
+			<listbox model ="@load(vm.parties)">
+				<listhead>
+					<listheader label = "Name"/>
+					<listheader label = "Actions" />
+				</listhead>
+				<template name="model">
+					<listitem>
+						<listcell label = "@load(each.name)" />
+						<listcell>
+							<button label = "delete" onClick = "@command('delete', p = each)"/>
+							<button label = "edit" onClick = "@command('edit', p = each)"/>
+						</listcell>
+					</listitem>
+				</template>
+			</listbox>
+		</groupbox>	
+	
+	</window>
+
+</zk>
