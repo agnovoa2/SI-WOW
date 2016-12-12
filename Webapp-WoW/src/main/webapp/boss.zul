@@ -5,7 +5,7 @@
 		apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('wow.proyectosi.webapp.viewmodel.BossVM')">
 
-		<window title="Project Editor" border="normal" mode="modal"
+		<window title="Boss Editor" border="normal" mode="modal"
 			visible="@load(vm.currentBoss ne null)">
 			Name:
 			<textbox

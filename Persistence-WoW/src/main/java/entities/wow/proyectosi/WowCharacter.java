@@ -1,6 +1,8 @@
 package entities.wow.proyectosi;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -14,124 +16,153 @@ import javax.persistence.ManyToOne;
 @Entity
 public class WowCharacter {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
-	
-	private String name;
-	private int level;
-	private String gender;
-	private String race;
-	private String characterClass;
-	private String faction;
-	
-	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	@ManyToMany(mappedBy="wowcharacters")
-	private Set<Item> items;
-	
-	@ManyToMany(mappedBy="wowcharacters")
-	private Set<Quest> quests;
-	
-	@ManyToOne
-	@JoinColumn(name = "party")
-	private Party party;
-	
-	public int getId() {
-		return id;
-	}
-	
-	public String getName() {
-		return name;
-	}
+    private String name;
+    private int level;
+    private String gender;
+    private String race;
+    private String characterClass;
+    private String faction;
 
-	public void setName(String name) {
-		this.name = name;
-	}
 
-	public int getLevel() {
-		return level;
-	}
+    @ManyToMany(mappedBy = "wowcharacters")
+    private Set<Item> items;
 
-	public void setLevel(int level) {
-		this.level = level;
-	}
+    @ManyToMany(mappedBy = "wowcharacters")
+    private Set<Quest> quests;
 
-	public String getGender() {
-		return gender;
-	}
+    @ManyToOne
+    @JoinColumn(name = "party")
+    private Party party;
 
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getRace() {
-		return race;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setRace(String race) {
-		this.race = race;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getCharacterClass() {
-		return characterClass;
-	}
+    public int getLevel() {
+        return level;
+    }
 
-	public void setCharacterClass(String characterClass) {
-		this.characterClass = characterClass;
-	}
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
-	public String getFaction() {
-		return faction;
-	}
+    public String getGender() {
+        return gender;
+    }
 
-	public void setFaction(String faction) {
-		this.faction = faction;
-	}
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 
-	public Set<Quest> getQuests() {
-		return Collections.unmodifiableSet(quests);
-	}
+    public String getRace() {
+        return race;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	public Set<Item> getItems() {
-		return Collections.unmodifiableSet(items);
-	}
+    public void setRace(String race) {
+        this.race = race;
+    }
 
-	public void addItem(Item item) {
-		item.internalAddWowCharacter(this);
-		this.items.add(item);
-	}
-	
-	void internalAddItem(Item item) {
-		this.items.add(item);
-	}
-	
-	public void removeItem(Item item){
-		item.internalRemoveWowCharacter(this);
-		this.items.remove(item);
-	}
-	
-	void internalRemoveItem(Item item) {
-		this.items.remove(item);
-	}
-	
-	public Party getParty(){
-		return this.party;
-	}
-	
-	public void setParty(Party party) {
-		if(this.party != null){
-			this.party.internalRemoveWowCharacter(this);
-		}
-		
-		this.party = party;
+    public String getCharacterClass() {
+        return characterClass;
+    }
 
-		if(this.party != null){
-			this.party.internalAddWowCharacter(this);
-		}
-	}
+    public void setCharacterClass(String characterClass) {
+        this.characterClass = characterClass;
+    }
+
+    public String getFaction() {
+        return faction;
+    }
+
+    public void setFaction(String faction) {
+        this.faction = faction;
+    }
+
+    public Set<Quest> getQuests() {
+        return Collections.unmodifiableSet(quests);
+    }
+
+    public void setQuests(Collection<Quest> quests) {
+        // remove my quests not in quests
+        Set<Quest> myQuestsCopy = new HashSet<>(this.quests);
+        for (Quest employee : myQuestsCopy) {
+            if (!quests.contains(employee)) {
+                this.removeQuest(employee);
+            }
+        }
+
+        // add new quests (since it is a set, no repetitions are possible)
+        for (Quest employee : quests) {
+            this.addQuest(employee);
+        }
+
+    }
+
+    public void addQuest(Quest q) {
+        q.internalAddWowCharacter(this);
+        this.quests.add(q);
+    }
+
+    public void removeQuest(Quest q) {
+        q.internalRemoveWowCharacter(this);
+        this.quests.remove(q);
+    }
+
+    void internalAddQuest(Quest q) {
+        this.quests.add(q);
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Set<Item> getItems() {
+        return Collections.unmodifiableSet(items);
+    }
+
+    public void addItem(Item item) {
+        item.internalAddWowCharacter(this);
+        this.items.add(item);
+    }
+
+    void internalAddItem(Item item) {
+        this.items.add(item);
+    }
+
+    public void removeItem(Item item) {
+        item.internalRemoveWowCharacter(this);
+        this.items.remove(item);
+    }
+
+    void internalRemoveItem(Item item) {
+        this.items.remove(item);
+    }
+
+    public Party getParty() {
+        return this.party;
+    }
+
+    public void setParty(Party party) {
+        if (this.party != null) {
+            this.party.internalRemoveWowCharacter(this);
+        }
+
+        this.party = party;
+
+        if (this.party != null) {
+            this.party.internalAddWowCharacter(this);
+        }
+    }
 }

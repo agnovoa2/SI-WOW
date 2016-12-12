@@ -1,7 +1,15 @@
 <zk>
-	<window title="SI WoW management" border="normal">
-		<a href="/item.zul" label="Item management" />
-		<div/>
-		<a href="/boss.zul" label="Boss management" />
-	</window>
+    <window title="SI WoW management" border="normal">
+        <a href="/item.zul" label="Item management"/>
+        <div/>
+        <a href="/boss.zul" label="Boss management"/>
+        <div/>
+        <a href="/raid.zul" label="Raid management"/>
+        <div/>
+        <a href="/party.zul" label="Party management"/>
+        <div/>
+        <a href="/wowcharacter.zul" label="Character management"/>
+        <div/>
+        <a href="/quest.zul" label="Quest management"/>
+    </window>
 </zk>

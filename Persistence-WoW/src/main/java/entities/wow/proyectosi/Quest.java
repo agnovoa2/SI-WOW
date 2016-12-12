@@ -13,92 +13,105 @@ import javax.persistence.ManyToMany;
 @Entity
 public class Quest {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
-	
-	private String questName;
-	private String questDescription;
-	private int minLevel;
-	private int expReward;
-	private int goldReward;
-	private int silverReward;
-	private int copperReward;
-	
-	@ManyToMany
-	@JoinTable(name = "wowcharacter_quest", joinColumns = @JoinColumn(name = "quest_id", referencedColumnName = "id"), 
-		inverseJoinColumns = @JoinColumn(name = "wowcharacter_id", referencedColumnName = "id"))
-	private List<WowCharacter> wowcharacters;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	public int getId() {
-		return id;
-	}
+    private String questName;
+    private String questDescription;
+    private int minLevel;
+    private int expReward;
+    private int goldReward;
+    private int silverReward;
+    private int copperReward;
 
-	public String getQuestName() {
-		return questName;
-	}
+    @ManyToMany
+    @JoinTable(name = "wowcharacter_quest", joinColumns = @JoinColumn(name = "quest_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "wowcharacter_id", referencedColumnName = "id"))
+    private List<WowCharacter> wowcharacters;
 
-	public void setQuestName(String questName) {
-		this.questName = questName;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getQuestDescription() {
-		return questDescription;
-	}
+    public String getQuestName() {
+        return questName;
+    }
 
-	public void setQuestDescription(String questDescription) {
-		this.questDescription = questDescription;
-	}
+    public void setQuestName(String questName) {
+        this.questName = questName;
+    }
 
-	public int getExpReward() {
-		return expReward;
-	}
+    public String getQuestDescription() {
+        return questDescription;
+    }
 
-	public void setExpReward(int expReward) {
-		this.expReward = expReward;
-	}
+    public void setQuestDescription(String questDescription) {
+        this.questDescription = questDescription;
+    }
 
-	public int getGoldReward() {
-		return goldReward;
-	}
+    public int getExpReward() {
+        return expReward;
+    }
 
-	public void setGoldReward(int goldReward) {
-		this.goldReward = goldReward;
-	}
+    public void setExpReward(int expReward) {
+        this.expReward = expReward;
+    }
 
-	public int getSilverReward() {
-		return silverReward;
-	}
+    public int getGoldReward() {
+        return goldReward;
+    }
 
-	public void setSilverReward(int silverReward) {
-		this.silverReward = silverReward;
-	}
+    public void setGoldReward(int goldReward) {
+        this.goldReward = goldReward;
+    }
 
-	public int getCopperReward() {
-		return copperReward;
-	}
+    public int getSilverReward() {
+        return silverReward;
+    }
 
-	public void setCopperReward(int copperReward) {
-		this.copperReward = copperReward;
-	}
+    public void setSilverReward(int silverReward) {
+        this.silverReward = silverReward;
+    }
 
-	public List<WowCharacter> getWowcharacters() {
-		return wowcharacters;
-	}
+    public int getCopperReward() {
+        return copperReward;
+    }
 
-	public void setWowcharacters(List<WowCharacter> wowcharacters) {
-		this.wowcharacters = wowcharacters;
-	}
+    public void setCopperReward(int copperReward) {
+        this.copperReward = copperReward;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public List<WowCharacter> getWowcharacters() {
+        return wowcharacters;
+    }
 
-	public int getMinLevel() {
-		return minLevel;
-	}
+    public void setWowcharacters(List<WowCharacter> wowcharacters) {
+        this.wowcharacters = wowcharacters;
+    }
 
-	public void setMinLevel(int minLevel) {
-		this.minLevel = minLevel;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getMinLevel() {
+        return minLevel;
+    }
+
+    public void setMinLevel(int minLevel) {
+        this.minLevel = minLevel;
+    }
+
+    public void addWowCharacter(WowCharacter wc) {
+        wc.internalAddQuest(this);
+        this.wowcharacters.add(wc);
+    }
+
+    public void internalAddWowCharacter(WowCharacter wowcharacter) {
+        this.wowcharacters.add(wowcharacter);
+    }
+
+    public void internalRemoveWowCharacter(WowCharacter wowcharacter) {
+        this.wowcharacters.remove(wowcharacter);
+    }
 }

@@ -1,0 +1,78 @@
+<?page title="Character management" contentType="text/html;charset=UTF-8"?>
+<zk>
+    <include src="menu.zul"/>
+    <window title="Edit Characters" border="normal"
+            apply="org.zkoss.bind.BindComposer"
+            viewModel="@id('vm') @init('wow.proyectosi.webapp.viewmodel.WowCharacterVM')">
+
+        <window title="Character Editor" border="normal" mode="modal"
+                visible="@load(vm.currentWowCharacter ne null)">
+            Name:
+            <textbox
+                    value="@load(vm.currentWowCharacter.name) @save(vm.currentWowCharacter.name, before='save')"/>
+            <div/>
+            Level:
+            <textbox
+                    value="@load(vm.currentWowCharacter.level) @save(vm.currentWowCharacter.level, before='save')"/>
+            <div/>
+            Party
+            <combobox model="@load(vm.parties)"
+                      selectedItem="@load(vm.currentWowCharacter.party) @save(vm.currentWowCharacter.party, before='save')">
+                <template name="model">
+                    <comboitem label="@load(each.name)"/>
+                </template>
+            </combobox>
+            <!--Quests-->
+            <!--<listbox model="@load(vm.quests)" multiple="true"-->
+                     <!--selectedItems="@load(vm.currentWowCharacter.quests) @save(vm.currentWowCharacter.quests, before='save')">-->
+
+                <!--<listhead>-->
+                    <!--<listheader label="name"></listheader>-->
+                <!--</listhead>-->
+                <!--<template name="model">-->
+                    <!--<listitem><listcell><label value="@load(each.name)"/></listcell></listitem>-->
+
+                <!--</template>-->
+
+            <!--</listbox>-->
+            <hbox>
+                <button label="save" onClick="@command('save')"/>
+                <button label="cancel" onClick="@command('cancel')"/>
+            </hbox>
+        </window>
+
+
+        <groupbox mold="3d" closable="false">
+            <caption label="Character list">
+                <button label="new" onClick="@command('newWowCharacter')"/>
+            </caption>
+            <listbox model="@load(vm.wowCharacters)">
+                <listhead>
+                    <listheader label="Name"/>
+                    <listheader label="Level"/>
+                    <!--<listheader label="Party"/>-->
+                    <listheader label="Actions"/>
+                </listhead>
+                <template name="model">
+                    <listitem>
+                        <listcell>
+                            <label value="@load(each.name)"/>
+                        </listcell>
+                        <listcell>
+                            <label value="@load(each.level)"/>
+                        </listcell>
+                        <listcell>
+                             <label value="@load(each.party.name)"/>
+                        </listcell>
+                        <listcell>
+                            <button label="delete"
+                                    onClick="@command('delete', wc=each)"/>
+                            <button label="edit"
+                                    onClick="@command('edit', wc=each)"/>
+                        </listcell>
+                    </listitem>
+                </template>
+            </listbox>
+        </groupbox>
+    </window>
+</zk>

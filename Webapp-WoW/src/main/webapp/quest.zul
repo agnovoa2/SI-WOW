@@ -1,0 +1,82 @@
+<?page title="Quest management" contentType="text/html;charset=UTF-8"?>
+<zk>
+    <include src="menu.zul"/>
+    <window title="Edit Quests" border="normal"
+            apply="org.zkoss.bind.BindComposer"
+            viewModel="@id('vm') @init('wow.proyectosi.webapp.viewmodel.QuestVM')">
+
+        <window title="Quest Editor" border="normal" mode="modal"
+                visible="@load(vm.currentQuest ne null)">
+            Quest Name:
+            <textbox
+                    value="@load(vm.currentQuest.questName) @save(vm.currentQuest.questName, before='save')"/>
+            <div/>
+            Description:
+            <textbox
+                    value="@load(vm.currentQuest.questDescription) @save(vm.currentQuest.questDescription, before='save')"/>
+            <div/>
+            Minimum Level:
+            <textbox
+                    value="@load(vm.currentQuest.minLevel) @save(vm.currentQuest.minLevel, before='save')"/>
+            <div/>
+            Experience Reward:
+            <textbox
+                    value="@load(vm.currentQuest.expReward) @save(vm.currentQuest.expReward, before='save')"/>
+            <div/>
+            Gold Reward:
+            <textbox
+                    value="@load(vm.currentQuest.goldReward) @save(vm.currentQuest.goldReward, before='save')"/>
+            <div/>
+            Silver Reward:
+            <textbox
+                    value="@load(vm.currentQuest.silverReward) @save(vm.currentQuest.silverReward, before='save')"/>
+            <div/>
+            Copper Reward:
+            <textbox
+                    value="@load(vm.currentQuest.copperReward) @save(vm.currentQuest.copperReward, before='save')"/>
+            <div/>
+
+
+            <hbox>
+                <button label="save" onClick="@command('save')"/>
+                <button label="cancel" onClick="@command('cancel')"/>
+            </hbox>
+        </window>
+        <groupbox mold="3d" closable="false">
+            <caption label="Quest list">
+                <button label="new" onClick="@command('newQuest')"/>
+            </caption>
+            <listbox model="@load(vm.quests)">
+                <listhead>
+                    <listheader label="Name"/>
+                    <listheader label="Description"/>
+                    <listheader label="Minimum Level"/>
+                    <listheader label="Experience"/>
+                    <listheader label="Actions"/>
+                </listhead>
+                <template name="model">
+                    <listitem>
+                        <listcell>
+                            <label value="@load(each.questName)"/>
+                        </listcell>
+                        <listcell>
+                            <label value="@load(each.questDescription)"/>
+                        </listcell>
+                        <listcell>
+                            <label value="@load(each.minLevel)"/>
+                        </listcell>
+                        <listcell>
+                            <label value="@load(each.expReward)"/>
+                        </listcell>
+                        <listcell>
+                            <button label="delete"
+                                    onClick="@command('delete', q=each)"/>
+                            <button label="edit"
+                                    onClick="@command('edit', q=each)"/>
+                        </listcell>
+                    </listitem>
+                </template>
+            </listbox>
+        </groupbox>
+    </window>
+</zk>
