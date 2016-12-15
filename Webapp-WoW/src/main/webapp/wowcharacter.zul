@@ -22,19 +22,19 @@
                     <comboitem label="@load(each.name)"/>
                 </template>
             </combobox>
-            <!--Quests-->
-            <!--<listbox model="@load(vm.quests)" multiple="true"-->
-                     <!--selectedItems="@load(vm.currentWowCharacter.quests) @save(vm.currentWowCharacter.quests, before='save')">-->
+            Quests
+            <listbox model="@load(vm.quests)" multiple="true"
+                     selectedItems="@load(vm.currentWowCharacter.quests) @save(vm.currentWowCharacter.quests, before='save')">
 
-                <!--<listhead>-->
-                    <!--<listheader label="name"></listheader>-->
-                <!--</listhead>-->
-                <!--<template name="model">-->
-                    <!--<listitem><listcell><label value="@load(each.name)"/></listcell></listitem>-->
+                <listhead>
+                    <listheader label="name"></listheader>
+                </listhead>
+                <template name="model">
+                    <listitem><listcell><label value="@load(each.name)"/></listcell></listitem>
 
-                <!--</template>-->
+                </template>
 
-            <!--</listbox>-->
+            </listbox>
             <hbox>
                 <button label="save" onClick="@command('save')"/>
                 <button label="cancel" onClick="@command('cancel')"/>
@@ -50,7 +50,7 @@
                 <listhead>
                     <listheader label="Name"/>
                     <listheader label="Level"/>
-                    <!--<listheader label="Party"/>-->
+                    <listheader label="Party"/>
                     <listheader label="Actions"/>
                 </listhead>
                 <template name="model">

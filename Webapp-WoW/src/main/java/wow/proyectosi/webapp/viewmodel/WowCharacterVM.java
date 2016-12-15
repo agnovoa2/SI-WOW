@@ -34,7 +34,7 @@ public class WowCharacterVM {
     }
 
     public List<Quest> getQuests() {
-        EntityManager em = DesktopEntityManagerManager.getDesktopEntityManager();
+        EntityManager em = getDesktopEntityManager();
         return em.createQuery("SELECT q FROM Quest q", Quest.class).getResultList();
     }
 

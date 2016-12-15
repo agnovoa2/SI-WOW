@@ -29,10 +29,10 @@ public class WowCharacter {
 
 
     @ManyToMany(mappedBy = "wowcharacters")
-    private Set<Item> items;
+    private Set<Item> items = new HashSet<Item>();
 
     @ManyToMany(mappedBy = "wowcharacters")
-    private Set<Quest> quests;
+    private Set<Quest> quests = new HashSet<Quest>();
 
     @ManyToOne
     @JoinColumn(name = "party")

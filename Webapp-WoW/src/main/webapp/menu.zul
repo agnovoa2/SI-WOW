@@ -14,5 +14,33 @@
 				</menuitem>
 			</menupopup>
 		</menu>
+		<menu label="Party">
+			<menupopup>
+				<menuitem label="Edit Parties..." 
+				href="party.zul">
+				</menuitem>
+			</menupopup>
+		</menu>
+		<menu label="Quests">
+			<menupopup>
+				<menuitem label="Edit Quests..." 
+				href="quest.zul">
+				</menuitem>
+			</menupopup>
+		</menu>
+		<menu label="Raid">
+			<menupopup>
+				<menuitem label="Edit Raids..." 
+				href="raid.zul">
+				</menuitem>
+			</menupopup>
+		</menu>
+		<menu label="Characters">
+			<menupopup>
+				<menuitem label="Edit Characters..." 
+				href="wowcharacter.zul">
+				</menuitem>
+			</menupopup>
+		</menu>
 	</menubar>
 </zk>
