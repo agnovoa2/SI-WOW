@@ -18,22 +18,47 @@ import org.junit.Test;
 
 import entities.wow.proyectosi.Boss;
 
+/**
+ * JUnit Test Class for test Boss CRUDL.
+ * @author Alejandro Gutiérrez Novoa
+ * @version 1.0
+ */
 public class BossTest extends SQLBasedTest{
 	private static EntityManagerFactory emf;
+	
+	/**
+	 * Sets up the entity manager factory that will be used in the tests.
+	 * @throws Exception	If an exception occurs.
+	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		emf = Persistence.createEntityManagerFactory("si-database");
-	}	
+	}
+	
+	/**
+	 * Close the entity manager factory at the end of the tests.
+	 * @throws Exception	If an exception occurs.
+	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		if(emf!=null && emf.isOpen()) emf.close();
 	}
+	
+	/**
+	 * Deletes all the registers of the Boss table in the database after the
+	 * completion of every test.
+	 * @throws SQLException	If an sqlexception occurs.
+	 */
 	@After
-	public void deleteTestItem() throws SQLException{
+	public void deleteTestBoss() throws SQLException{
 		Statement statement = jdbcConnection.createStatement();
 		statement.executeUpdate("Delete From Boss");
 	}
-	//C
+	
+	/**
+	 * Junit test for create.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testCreateBoss() throws SQLException {
 		
@@ -56,7 +81,10 @@ public class BossTest extends SQLBasedTest{
 		assertEquals(1, rs.getInt("total"));
 	}
 	
-	//R
+	/**
+	 * Junit test for read.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testFindBossById() throws SQLException{
 		//prepare database for test
@@ -75,7 +103,10 @@ public class BossTest extends SQLBasedTest{
 		assertEquals(id, b.getId());
 	}
 	
-	//U
+	/**
+	 * Junit test for update.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testUpdateBoss() throws SQLException{
 		//prepare database for test
@@ -101,8 +132,12 @@ public class BossTest extends SQLBasedTest{
 		assertEquals(id, rs.getInt("id"));
 	}
 	
-	//U
 	private Boss aDetachedBoss = null;
+	
+	/**
+	 * Junit test for update a detached entity.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testUpdateByMerge() throws SQLException {
 		//prepare database for test
@@ -133,7 +168,10 @@ public class BossTest extends SQLBasedTest{
 		assertEquals(id, rs.getInt("id"));
 	}
 	
-	//D
+	/**
+	 * Junit test for delete.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testDeleteBoss() throws SQLException {
 		//prepare database for test
@@ -157,7 +195,10 @@ public class BossTest extends SQLBasedTest{
 		assertEquals(0, rs.getInt("total"));
 	}
 	
-	//L
+	/**
+	 * Junit test for list.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testListBosses() throws SQLException {
 		//prepare database for test

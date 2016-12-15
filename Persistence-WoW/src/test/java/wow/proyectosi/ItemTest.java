@@ -18,26 +18,50 @@ import org.junit.Test;
 
 import entities.wow.proyectosi.Item;
 
+/**
+ * JUnit Test Class for test Item CRUDL.
+ * @author Alejandro Gutiérrez Novoa
+ * @version 1.0
+ */
 public class ItemTest extends SQLBasedTest{
 	private static EntityManagerFactory emf;
+	
+	/**
+	 * Sets up the entity manager factory that will be used in the tests.
+	 * @throws Exception	If an exception occurs.
+	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		emf = Persistence.createEntityManagerFactory("si-database");
 		Statement statement = jdbcConnection.createStatement();
 		statement.executeUpdate(
 				"Delete From Item Where id = 23416");
-	}	
+	}
+	
+	/**
+	 * Close the entity manager factory at the end of the tests.
+	 * @throws Exception	If an exception occurs.
+	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		if(emf!=null && emf.isOpen()) emf.close();
 	}
+	
+	/**
+	 * Deletes all the registers of the Item table in the database after the
+	 * completion of every test.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@After
 	public void deleteTestItem() throws SQLException{
 		Statement statement = jdbcConnection.createStatement();
-		statement.executeUpdate(
-				"Delete From Item Where id = 23416");
+		statement.executeUpdate("Delete From Item");
 	}
-	//C
+	
+	/**
+	 * Junit test for create.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testCreateItem() throws SQLException {
 		
@@ -64,7 +88,11 @@ public class ItemTest extends SQLBasedTest{
 		assertEquals(1, rs.getInt("total"));
 
 	}
-	//R
+
+	/**
+	 * Junit test for read.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testFindItemById() throws SQLException{
 		//prepare database for test
@@ -84,7 +112,11 @@ public class ItemTest extends SQLBasedTest{
 		statement.executeUpdate(
 				"Delete From Item Where id = " + i.getId());
 	}
-	//U
+
+	/**
+	 * Junit test for update.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testUpdateItem() throws SQLException{
 		//prepare database for test
@@ -110,8 +142,12 @@ public class ItemTest extends SQLBasedTest{
 		assertEquals(id, rs.getInt("id"));
 	}
 	
-	//U
 	private Item aDetachedItem = null;
+	
+	/**
+	 * Junit test for update a detached Entity.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testUpdateByMerge() throws SQLException {
 		//prepare database for test
@@ -142,7 +178,10 @@ public class ItemTest extends SQLBasedTest{
 		assertEquals(id, rs.getInt("id"));
 	}
 	
-	//D
+	/**
+	 * Junit test for delete.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testDeleteItem() throws SQLException {
 		//prepare database for test
@@ -166,7 +205,10 @@ public class ItemTest extends SQLBasedTest{
 		assertEquals(0, rs.getInt("total"));
 	}
 	
-	//L
+	/**
+	 * Junit test for list.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testListBosses() throws SQLException {
 		//prepare database for test
