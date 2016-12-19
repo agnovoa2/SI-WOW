@@ -1,5 +1,5 @@
 <zk>
-
+	<include src="menu.zul"/>
 	<window title = "Edit Parties" border = "normal"
 		apply = "org.zkoss.bind.BindComposer"
 		viewModel = "@id('vm') @init('wow.proyectosi.webapp.viewmodel.PartyVM')"

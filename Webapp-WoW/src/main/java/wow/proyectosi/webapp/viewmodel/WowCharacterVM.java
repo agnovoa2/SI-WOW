@@ -9,7 +9,10 @@ import wow.proyectosi.TransactionUtils;
 import wow.proyectosi.webapp.util.DesktopEntityManagerManager;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import static wow.proyectosi.webapp.util.DesktopEntityManagerManager.getDesktopEntityManager;
 
@@ -57,6 +60,20 @@ public class WowCharacterVM {
     @Command
     @NotifyChange("wowCharacters")
     public void delete(@BindingParam("wc") WowCharacter wowCharacter) {
+        Set<Quest> copyQ = new HashSet<>(wowCharacter.getQuests());
+        for (Quest q: copyQ
+             ) {
+            if (q.getWowcharacters().contains(wowCharacter)){
+                List<WowCharacter> copywc = new ArrayList<>(q.getWowcharacters());
+                copywc.remove(wowCharacter);
+                q.setWowcharacters(copywc);
+            }
+        }
+
+        Set<WowCharacter> copyW = new HashSet<>(wowCharacter.getParty().getWowCharacters());
+        copyW.remove(wowCharacter);
+        wowCharacter.setParty(null);
+
         EntityManager em = DesktopEntityManagerManager.getDesktopEntityManager();
         TransactionUtils.doTransaction(em, __ -> {
             em.remove(wowCharacter);

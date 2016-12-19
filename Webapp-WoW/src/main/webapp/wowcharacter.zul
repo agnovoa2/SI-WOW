@@ -27,10 +27,10 @@
                      selectedItems="@load(vm.currentWowCharacter.quests) @save(vm.currentWowCharacter.quests, before='save')">
 
                 <listhead>
-                    <listheader label="name"></listheader>
+                    <listheader label="Quest Name"></listheader>
                 </listhead>
                 <template name="model">
-                    <listitem><listcell><label value="@load(each.name)"/></listcell></listitem>
+                    <listitem><listcell><label value="@load(each.questName)"/></listcell></listitem>
 
                 </template>
 
