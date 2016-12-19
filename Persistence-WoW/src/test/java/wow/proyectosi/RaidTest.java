@@ -19,23 +19,48 @@ import org.junit.Test;
 import entities.wow.proyectosi.Raid;
 import entities.wow.proyectosi.Boss;
 
+/**
+ * JUnit Test Class for test Raid CRUDL.
+ * @author Javier Villalobos Santamarina
+ * @version 1.0
+ */
 public class RaidTest extends SQLBasedTest{
 	private static EntityManagerFactory emf;
+	
+	/**
+	 * Sets up the entity manager factory that will be used in the tests.
+	 * @throws Exception	If an exception occurs.
+	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		emf = Persistence.createEntityManagerFactory("si-database");
 	}	
+	
+	/**
+	 * Close the entity manager factory at the end of the tests.
+	 * @throws Exception	If an exception occurs.
+	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		if(emf!=null && emf.isOpen()) emf.close();
 	}
+	
+	/**
+	 * Deletes all the registers of the Boss table and Raid table in the database after the
+	 * completion of every test.
+	 * @throws SQLException	If an sqlexception occurs.
+	 */
 	@After
 	public void deleteTestRaid() throws SQLException{
 		Statement statement = jdbcConnection.createStatement();
 		statement.executeUpdate("Delete From Boss");
 		statement.executeUpdate("Delete From Raid");
 	}
-	//C
+
+	/**
+	 * Junit test for create.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testCreateRaid() throws SQLException {
 		Statement statement = jdbcConnection.createStatement();
@@ -75,7 +100,11 @@ public class RaidTest extends SQLBasedTest{
 		assertEquals(r.getId(), rs.getInt("raid"));
 			
 	}
-	//R
+
+	/**
+	 * Junit test for read.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testFindRaid() throws SQLException{
 		Statement statement = jdbcConnection.createStatement();
@@ -97,7 +126,10 @@ public class RaidTest extends SQLBasedTest{
 		assertEquals(r, r.getBosses().iterator().next().getRaid());
 	}
 	
-	//U
+	/**
+	 * Junit test for update.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testUpdateRaid() throws SQLException{
 		//prepare database for test
@@ -124,8 +156,13 @@ public class RaidTest extends SQLBasedTest{
 		assertEquals(id, rs.getInt("id"));
 	}
 	
-	//U
+	
 	private Raid aDetachedRaid = null;
+	
+	/**
+	 * Junit test for update a detached entity.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testUpdateByMerge() throws SQLException {
 		//prepare database for test
@@ -156,7 +193,10 @@ public class RaidTest extends SQLBasedTest{
 		assertEquals(id, rs.getInt("id"));
 	}
 	
-	//D
+	/**
+	 * Junit test for delete.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testDeleteRaid() throws SQLException {
 		//prepare database for test
@@ -180,7 +220,10 @@ public class RaidTest extends SQLBasedTest{
 		assertEquals(0, rs.getInt("total"));
 	}
 	
-	//L
+	/**
+	 * Junit test for list.
+	 * @throws SQLException	If an sql exception occurs.
+	 */
 	@Test
 	public void testListRaids() throws SQLException {
 		//prepare database for test

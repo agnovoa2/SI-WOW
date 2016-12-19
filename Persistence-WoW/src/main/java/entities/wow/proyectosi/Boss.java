@@ -29,7 +29,7 @@ public class Boss {
 
 	/**
 	 * Return an Integer that represents the unique id of the Boss.
-	 * @return id of the Item.
+	 * @return id of the Boss.
 	 */
 	public int getId() {
 		return id;

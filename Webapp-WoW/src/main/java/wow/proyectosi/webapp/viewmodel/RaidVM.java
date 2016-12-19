@@ -16,18 +16,35 @@ import entities.wow.proyectosi.Boss;
 import wow.proyectosi.TransactionUtils;
 import wow.proyectosi.webapp.util.DesktopEntityManagerManager;
 
+/**
+ * ViewModel Class for Raid.
+ * @author Javier Villalobos Santamarina
+ * @version 1.0
+ */
 public class RaidVM {
 	private Raid currentRaid = null;
 		
+	/**
+	 * Return the current Raid in the desktop.
+	 * @return the Current Raid.
+	 */
 		public Raid getCurrentRaid() {
 			return currentRaid;
 		}
 		
+		/**
+		 * Return a List containing all the Raid rows in the database.
+		 * @return List with all the Raid.
+		 */
 		public List<Raid> getRaids() {
 			EntityManager em = DesktopEntityManagerManager.getDesktopEntityManager();
 			return em.createQuery("SELECT r FROM Raid r", Raid.class).getResultList();
 		}
 		
+		/**
+		 * Deletes a Raid from the database.
+		 * @param raid	Raid to be deleted.
+		 */
 		@Command
 		@NotifyChange("raids")
 		public void delete(@BindingParam("r") Raid raid) {
@@ -43,12 +60,19 @@ public class RaidVM {
 			});
 		}
 		
+		
+		/**
+		 * Instantiate the currentRaid to an empty Raid.
+		 */
 		@Command
 		@NotifyChange("currentRaid")
 		public void newRaid() {
 			this.currentRaid = new Raid();
 		}
 		
+		/**
+		 * Persists or updates the currentRaid Raid in the database.
+		 */
 		@Command
 		@NotifyChange({"raids", "currentRaid"})
 		public void save() {
@@ -59,12 +83,19 @@ public class RaidVM {
 			this.currentRaid = null;
 		}
 		
+		/**
+		 * Set the currentRaid Raid to null.
+		 */
 		@Command
 		@NotifyChange("currentRaid")
 		public void cancel() {
 			this.currentRaid = null;
 		}
 		
+		/**
+		 * Set the currentRaid Raid to the selected Raid for edition.
+		 * @param raid	Raid to be edited.
+		 */
 		@Command
 		@NotifyChange("currentRaid")
 		public void edit(@BindingParam("r") Raid raid) {
