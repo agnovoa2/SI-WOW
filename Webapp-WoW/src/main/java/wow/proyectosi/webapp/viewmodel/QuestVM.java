@@ -13,20 +13,38 @@ import java.util.List;
 import static wow.proyectosi.webapp.util.DesktopEntityManagerManager.getDesktopEntityManager;
 
 /**
- * Created by ndrs on 12/12/2016.
+ * ViewModel Class for Quest.
+ *
+ * @author Andrés Vieira Vázquez
+ * @version 1.0
  */
 public class QuestVM {
     private Quest currentQuest = null;
 
+    /**
+     * Return the current Quest in the desktop.
+     *
+     * @return the Current Quest.
+     */
     public Quest getCurrentQuest() {
         return currentQuest;
     }
 
+    /**
+     * Return a List containing all the Quest rows in the database.
+     *
+     * @return List with all the Quest.
+     */
     public List<Quest> getQuests() {
         EntityManager em = getDesktopEntityManager();
         return em.createQuery("SELECT q FROM Quest q", Quest.class).getResultList();
     }
 
+    /**
+     * Deletes a Quest from the database.
+     *
+     * @param quest Quest to be deleted.
+     */
     @Command
     @NotifyChange("quests")
     public void delete(@BindingParam("q") Quest quest) {
@@ -36,14 +54,20 @@ public class QuestVM {
         });
     }
 
+    /**
+     * Instantiate the currentQuest to an empty Quest.
+     */
     @Command
     @NotifyChange("currentQuest")
     public void newQuest() {
         this.currentQuest = new Quest();
     }
 
+    /**
+     * Persists or updates the currentQuest Quest in the database.
+     */
     @Command
-    @NotifyChange({ "quests", "currentQuest" })
+    @NotifyChange({"quests", "currentQuest"})
     public void save() {
         EntityManager em = DesktopEntityManagerManager.getDesktopEntityManager();
         TransactionUtils.doTransaction(em, __ -> {
@@ -52,12 +76,20 @@ public class QuestVM {
         this.currentQuest = null;
     }
 
+    /**
+     * Set the currentQuest Quest to null.
+     */
     @Command
     @NotifyChange("currentQuest")
     public void cancel() {
         this.currentQuest = null;
     }
 
+    /**
+     * Set the currentQuest Quest to the selected Quest for edition.
+     *
+     * @param quest Quest to be edited.
+     */
     @Command
     @NotifyChange("currentQuest")
     public void edit(@BindingParam("q") Quest quest) {
